@@ -5,18 +5,33 @@
 
 using namespace std;
 
-const int INF = numeric_limits<int>::max();
-const int MAX_CITIES = 100;
+void temp();
 
 int main() {
-
-    tabu* test = new tabu("test_4.txt");
-
-    // Number of iterations and tabu list s
-    test->setTabuList(5);
-    test->printTabuList();
-    test->runTabuSearch(100);
-    test->printSolution();
-
+    temp();
     return 0;
+}
+
+void temp(){
+    string a[] = {"tsp_6_1.txt",
+                  "tsp_6_2.txt",
+                  "tsp_10.txt",
+                  "tsp_12.txt",
+                  "tsp_13.txt",
+                  "tsp_14.txt",
+                  "tsp_15.txt",
+                  "tsp_17.txt",
+                  "test_4.txt"};
+    tabu* test;
+    for (int i = 0; i < 9; ++i) {
+
+
+        test = new tabu(a[i]);
+        cout << a[i] << endl;
+        // Number of iterations and tabu list s
+        test->setTabuList(10);
+        test->runTabuSearch(1000);
+        test->printSolution();
+        delete test;
+    }
 }
