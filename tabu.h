@@ -21,6 +21,7 @@ private:
 public:
     tabu(int n);
     tabu(string filename);
+    ~tabu();
 
     void copyArray( int *source, int *destination, int size);
 

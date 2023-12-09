@@ -63,7 +63,7 @@ void tabu::runTabuSearch(int iterations) {
 
     for (int iter = 0; iter < iterations; ++iter) {
         generateCandidateList(currentSolution);
-        printTabuList();
+        //printTabuList();
         int* bestMove = findBestMove(currentSolution);
 
         applyMove(currentSolution, bestMove);
@@ -201,6 +201,18 @@ void tabu::printTabuList() {
     for (int i = 0; i < tabuListSize; ++i) {
         cout << "{" << tabuList[i][0] << ", " << tabuList[i][1] << "}" << endl;
     }
+}
+
+tabu::~tabu() {
+    for (int i = 0; i < numCities; ++i) {
+        delete[] distanceMatrix[i];
+    }
+    delete[] distanceMatrix;
+    for (int i = 0; i < tabuListSize; ++i) {
+        delete[] tabuList[i];
+    }
+    delete[] tabuList;
+    delete[] bestSolution;
 }
 
 
