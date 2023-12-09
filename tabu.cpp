@@ -2,14 +2,37 @@
 // Created by kacpe on 09.12.2023.
 //
 
+#include <fstream>
 #include "tabu.h"
 using namespace std;
-tabu::tabu(int n, int distances[100][100]) {
+tabu::tabu(int n) {
+    srand(time(nullptr));
     bestCost = INF;
     numCities = n;
     for (int i = 0; i < numCities; ++i) {
         for (int j = 0; j < numCities; ++j) {
-            distanceMatrix[i][j] = distances[i][j];
+            if (i == j) distanceMatrix[i][j] = INT_MAX/2;
+            else distanceMatrix[i][j] = rand()%(INT_MAX/2);
+        }
+    }
+}
+
+tabu::tabu(string filename) {
+    std::string path = "../input_files/"+filename;
+    std::fstream f;
+    f.open(path);
+
+    if (f.is_open()){
+        f >> this->numCities;
+
+
+        for (int i = 0; i < numCities; ++i) {
+            for (int j = 0; j < numCities; ++j) {
+                f >> distanceMatrix[i][j];
+                if (i == j){
+                    distanceMatrix[i][j] = INT_MAX/2;
+                }
+            }
         }
     }
 }
@@ -139,4 +162,6 @@ void tabu::copyArray(const int source[MAX_CITIES], int destination[MAX_CITIES], 
         destination[i] = source[i];
     }
 }
+
+
 

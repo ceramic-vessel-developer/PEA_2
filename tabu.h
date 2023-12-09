@@ -19,7 +19,8 @@ private:
     int bestCost;
     std::pair<int, int> tabuList[MAX_CITIES];
 public:
-    tabu(int n, int s[100][100]);
+    tabu(int n);
+    tabu(string filename);
 
     void copyArray(const int *source, int *destination, int size);
 
