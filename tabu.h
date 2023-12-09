@@ -8,6 +8,7 @@
 #include <limits>
 #include <random>
 
+using namespace std;
 class tabu {
 private:
     const int INF = std::numeric_limits<int>::max();
