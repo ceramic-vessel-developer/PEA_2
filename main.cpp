@@ -13,7 +13,9 @@ int main() {
     tabu* test = new tabu("test_4.txt");
 
     // Number of iterations and tabu list s
-    test->runTabuSearch(100, 5);
+    test->setTabuList(5);
+    test->printTabuList();
+    test->runTabuSearch(100);
     test->printSolution();
 
     return 0;

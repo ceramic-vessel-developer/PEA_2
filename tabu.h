@@ -11,26 +11,29 @@
 using namespace std;
 class tabu {
 private:
-    const int INF = std::numeric_limits<int>::max();
-    static const int MAX_CITIES = 100;
+    int INF = INT_MAX/2;
     int numCities;
-    int distanceMatrix[MAX_CITIES][MAX_CITIES];
-    int bestSolution[MAX_CITIES];
+    int tabuListSize;
+    int** distanceMatrix;
+    int* bestSolution;
     int bestCost;
-    std::pair<int, int> tabuList[MAX_CITIES];
+    int** tabuList;
 public:
     tabu(int n);
     tabu(string filename);
 
-    void copyArray(const int *source, int *destination, int size);
+    void copyArray( int *source, int *destination, int size);
 
-    void applyMove(int *solution, const pair<int, int> &move);
+    void applyMove(int *solution, int*move);
 
-    pair<int, int> findBestMove(const int *solution, const pair<int, int> *tabuList);
+    void setTabuList(int tabuListSize);
+    void printTabuList();
 
-    void generateCandidateList(const int *solution, pair<int, int> *tabuList, int tabuListSize);
+    int* findBestMove(int *solution);
 
-    int calculateTotalCost(const int *solution);
+    void generateCandidateList(int *solution);
+
+    int calculateTotalCost(int *solution);
 
     void randomPermutation(int *arr, int size);
 
@@ -38,7 +41,7 @@ public:
 
     void printSolution();
 
-    void runTabuSearch(int iterations, int tabuListSize);
+    void runTabuSearch(int iterations);
 };
 
 

@@ -9,6 +9,15 @@ tabu::tabu(int n) {
     srand(time(nullptr));
     bestCost = INF;
     numCities = n;
+
+    this->bestSolution = new int [numCities];
+
+    this->distanceMatrix = new int * [numCities];
+    for (int i = 0; i < numCities; ++i) {
+        this->distanceMatrix[i] = new int [numCities];
+    }
+
+
     for (int i = 0; i < numCities; ++i) {
         for (int j = 0; j < numCities; ++j) {
             if (i == j) distanceMatrix[i][j] = INT_MAX/2;
@@ -19,12 +28,19 @@ tabu::tabu(int n) {
 
 tabu::tabu(string filename) {
     std::string path = "../input_files/"+filename;
+    bestCost = INF;
     std::fstream f;
     f.open(path);
 
     if (f.is_open()){
         f >> this->numCities;
 
+        this->bestSolution = new int [numCities];
+
+        this->distanceMatrix = new int * [numCities];
+        for (int i = 0; i < numCities; ++i) {
+            this->distanceMatrix[i] = new int [numCities];
+        }
 
         for (int i = 0; i < numCities; ++i) {
             for (int j = 0; j < numCities; ++j) {
@@ -37,16 +53,18 @@ tabu::tabu(string filename) {
     }
 }
 
-void tabu::runTabuSearch(int iterations, int tabuListSize) {
-    int currentSolution[MAX_CITIES];
+void tabu::runTabuSearch(int iterations) {
+
+    int* currentSolution = new int [numCities];
 
     initializeSolution(currentSolution);
     copyArray(currentSolution, bestSolution, numCities);
     bestCost = calculateTotalCost(currentSolution);
 
     for (int iter = 0; iter < iterations; ++iter) {
-        generateCandidateList(currentSolution, tabuList, tabuListSize);
-        pair<int, int> bestMove = findBestMove(currentSolution, tabuList);
+        generateCandidateList(currentSolution);
+        printTabuList();
+        int* bestMove = findBestMove(currentSolution);
 
         applyMove(currentSolution, bestMove);
 
@@ -71,14 +89,14 @@ void tabu::printSolution() {
     cout << "Cost of the best solution: " << bestCost << endl;
 }
 
-void tabu::initializeSolution(int solution[MAX_CITIES]) {
+void tabu::initializeSolution(int* solution) {
     for (int i = 0; i < numCities; ++i) {
         solution[i] = i;
     }
     randomPermutation(solution, numCities);
 }
 
-void tabu::randomPermutation(int arr[MAX_CITIES], int size) {
+void tabu::randomPermutation(int* arr, int size) {
     random_device rd;
     mt19937 g(rd());
 
@@ -89,7 +107,7 @@ void tabu::randomPermutation(int arr[MAX_CITIES], int size) {
     }
 }
 
-int tabu::calculateTotalCost(const int solution[MAX_CITIES]) {
+int tabu::calculateTotalCost(int* solution) {
     int cost = 0;
     for (int i = 0; i < numCities - 1; ++i) {
         cost += distanceMatrix[solution[i]][solution[i + 1]];
@@ -98,21 +116,24 @@ int tabu::calculateTotalCost(const int solution[MAX_CITIES]) {
     return cost;
 }
 
-void tabu::generateCandidateList(const int solution[MAX_CITIES], pair<int, int> tabuList[MAX_CITIES], int tabuListSize) {
+void tabu::generateCandidateList(int* solution) {
     int k = 0;
     for (int i = 1; i < numCities; ++i) {
         for (int j = i + 1; j < numCities; ++j) {
             bool isTabu = false;
 
             for (int m = 0; m < tabuListSize; ++m) {
-                if (tabuList[m] == make_pair(i, j)) {
+                if (tabuList[m][0] == i and tabuList[m][1] == j){ //make_pair(i, j)) {
                     isTabu = true;
                     break;
                 }
             }
 
             if (!isTabu) {
-                tabuList[k++] = make_pair(i, j);
+                //tabuList[k++] = make_pair(i, j);
+                tabuList[k][0] = i;
+                tabuList[k][1] = j;
+                k++;
                 if (k >= tabuListSize) {
                     return;
                 }
@@ -121,30 +142,33 @@ void tabu::generateCandidateList(const int solution[MAX_CITIES], pair<int, int> 
     }
 }
 
-pair<int, int> tabu::findBestMove(const int solution[MAX_CITIES], const pair<int, int> tabuList[MAX_CITIES]) {
-    pair<int, int> bestMove;
+int* tabu::findBestMove(int* solution) {
+    int* bestMove = new int[2];
+    bestMove[0] = 0;
+    bestMove[1] = 0;
     int bestCost = INF;
 
     for (int i = 1; i < numCities; ++i) {
         for (int j = i + 1; j < numCities; ++j) {
             bool isTabu = false;
 
-            for (int m = 0; m < numCities; ++m) {
-                if (tabuList[m] == make_pair(i, j)) {
+            for (int m = 0; m < tabuListSize; ++m) {
+                if (tabuList[m][0] == i and tabuList[m][1] == j) {
                     isTabu = true;
                     break;
                 }
             }
 
             if (!isTabu) {
-                int newSolution[MAX_CITIES];
+                int* newSolution = new int[numCities];
                 copyArray(solution, newSolution, numCities);
                 swap(newSolution[i], newSolution[j]);
 
                 int newCost = calculateTotalCost(newSolution);
                 if (newCost < bestCost) {
                     bestCost = newCost;
-                    bestMove = make_pair(i, j);
+                    bestMove[0] = i;
+                    bestMove[1] = j;
                 }
             }
         }
@@ -153,13 +177,29 @@ pair<int, int> tabu::findBestMove(const int solution[MAX_CITIES], const pair<int
     return bestMove;
 }
 
-void tabu::applyMove(int solution[MAX_CITIES], const pair<int, int>& move) {
-    swap(solution[move.first], solution[move.second]);
+void tabu::applyMove(int* solution, int* move) {
+    swap(solution[move[0]], solution[move[1]]);
 }
 
-void tabu::copyArray(const int source[MAX_CITIES], int destination[MAX_CITIES], int size) {
+void tabu::copyArray( int* source, int* destination, int size) {
     for (int i = 0; i < size; ++i) {
         destination[i] = source[i];
+    }
+}
+
+void tabu::setTabuList(int tabuListSize) {
+    this->tabuListSize = tabuListSize;
+    this->tabuList = new int * [tabuListSize];
+    for (int i = 0; i < tabuListSize; ++i) {
+        this->tabuList[i] = new int [2];
+        tabuList[i][0] = -1;
+        tabuList[i][1] = -1;
+    }
+}
+
+void tabu::printTabuList() {
+    for (int i = 0; i < tabuListSize; ++i) {
+        cout << "{" << tabuList[i][0] << ", " << tabuList[i][1] << "}" << endl;
     }
 }
 
