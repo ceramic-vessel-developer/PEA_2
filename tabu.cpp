@@ -60,9 +60,9 @@ void tabu::runTabuSearch(int iterations) {
     initializeSolution(currentSolution);
     copyArray(currentSolution, bestSolution, numCities);
     bestCost = calculateTotalCost(currentSolution);
-
+    generateCandidateList(currentSolution);
     for (int iter = 0; iter < iterations; ++iter) {
-        generateCandidateList(currentSolution);
+
         //printTabuList();
         int* bestMove = findBestMove(currentSolution);
 
@@ -118,7 +118,7 @@ int tabu::calculateTotalCost(int* solution) {
 
 void tabu::generateCandidateList(int* solution) {
     int k = 0;
-    for (int i = 1; i < numCities; ++i) {
+    for (int i = 0; i < numCities; ++i) {
         for (int j = i + 1; j < numCities; ++j) {
             bool isTabu = false;
 
@@ -148,7 +148,7 @@ int* tabu::findBestMove(int* solution) {
     bestMove[1] = 0;
     int bestCost = INF;
 
-    for (int i = 1; i < numCities; ++i) {
+    for (int i = 0; i < numCities; ++i) {
         for (int j = i + 1; j < numCities; ++j) {
             bool isTabu = false;
 
