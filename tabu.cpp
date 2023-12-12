@@ -20,8 +20,8 @@ tabu::tabu(int n) {
 
     for (int i = 0; i < numCities; ++i) {
         for (int j = 0; j < numCities; ++j) {
-            if (i == j) distanceMatrix[i][j] = INT_MAX/2;
-            else distanceMatrix[i][j] = rand()%(INT_MAX/2);
+            if (i == j) distanceMatrix[i][j] = 0;
+            else distanceMatrix[i][j] = rand()%1000;
         }
     }
 }
@@ -56,21 +56,21 @@ tabu::tabu(string filename) {
 void tabu::runTabuSearch(int iterations) {
 
     int* currentSolution = new int [numCities];
-
+    int* bestMove = new int [2];
+    int currentCost;
     initializeSolution(currentSolution);
     copyArray(currentSolution, bestSolution, numCities);
     bestCost = calculateTotalCost(currentSolution);
     generateCandidateList(currentSolution);
     for (int iter = 0; iter < iterations; ++iter) {
-
         //printTabuList();
-        int* bestMove = findBestMove(currentSolution);
+        bestMove= findBestMove(currentSolution);
 
         applyMove(currentSolution, bestMove);
 
         tabuList[iter % tabuListSize] = bestMove;
 
-        int currentCost = calculateTotalCost(currentSolution);
+        currentCost = calculateTotalCost(currentSolution);
         if (currentCost < bestCost) {
             copyArray(currentSolution, bestSolution, numCities);
             bestCost = currentCost;
@@ -170,6 +170,7 @@ int* tabu::findBestMove(int* solution) {
                     bestMove[0] = i;
                     bestMove[1] = j;
                 }
+                delete[] newSolution;
             }
         }
     }

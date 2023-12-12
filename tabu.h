@@ -5,7 +5,7 @@
 #ifndef PEA_2_TABU_H
 #define PEA_2_TABU_H
 #include <iostream>
-#include <limits>
+#include <climits>
 #include <random>
 
 using namespace std;
