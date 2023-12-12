@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include "map.h"
+#include <climits>
 
 map::map(int n) {
     srand(time(nullptr));

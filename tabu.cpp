@@ -12,7 +12,9 @@ tabu::tabu(int n) {
 
     this->bestSolution = new int [numCities];
 
+
     this->graph = new map(numCities);
+
 }
 
 tabu::tabu(string filename) {
@@ -25,21 +27,21 @@ tabu::tabu(string filename) {
 void tabu::runTabuSearch(int iterations) {
 
     int* currentSolution = new int [numCities];
-
+    int* bestMove = new int [2];
+    int currentCost;
     initializeSolution(currentSolution);
     copyArray(currentSolution, bestSolution, numCities);
     bestCost = calculateTotalCost(currentSolution);
     generateCandidateList(currentSolution);
     for (int iter = 0; iter < iterations; ++iter) {
-
         //printTabuList();
-        int* bestMove = findBestMove(currentSolution);
+        bestMove= findBestMove(currentSolution);
 
         applyMove(currentSolution, bestMove);
 
         tabuList[iter % tabuListSize] = bestMove;
 
-        int currentCost = calculateTotalCost(currentSolution);
+        currentCost = calculateTotalCost(currentSolution);
         if (currentCost < bestCost) {
             copyArray(currentSolution, bestSolution, numCities);
             bestCost = currentCost;
@@ -139,6 +141,7 @@ int* tabu::findBestMove(int* solution) {
                     bestMove[0] = i;
                     bestMove[1] = j;
                 }
+                delete[] newSolution;
             }
         }
     }

@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <limits>
 #include <random>
@@ -59,18 +60,20 @@ void temp(){
                   "tsp_17.txt",
                   "test_4.txt"};
     tabu* test;
-    for (int i = 0; i < 9; ++i) {
-
-
-        test = new tabu(a[i]);
-        cout << a[i] << endl;
+    for (int i = 1; i < 9; ++i) {
+        test = new tabu(i*100);
+        //cout << i << endl;
         // Number of iterations and tabu list s
+
+
         test->setTabuList(50);
         test->runTabuSearch(10000);
+
         test->printSolution();
         delete test;
     }
 }
+
 
 void testing(){
     int choice;
@@ -199,4 +202,5 @@ void tabu_m(){
         f.close();
     }
 }
+
 
