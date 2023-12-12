@@ -7,6 +7,7 @@
 #include <iostream>
 #include <climits>
 #include <random>
+#include "map.h"
 
 using namespace std;
 class tabu {
@@ -14,20 +15,10 @@ private:
     int INF = INT_MAX/2;
     int numCities;
     int tabuListSize;
-    int** distanceMatrix;
+    map* graph;
     int* bestSolution;
     int bestCost;
     int** tabuList;
-public:
-    tabu(int n);
-    tabu(string filename);
-    ~tabu();
-
-    void copyArray( int *source, int *destination, int size);
-
-    void applyMove(int *solution, int*move);
-
-    void setTabuList(int tabuListSize);
     void printTabuList();
 
     int* findBestMove(int *solution);
@@ -40,9 +31,20 @@ public:
 
     void initializeSolution(int *solution);
 
+    void copyArray( int *source, int *destination, int size);
+
+    void applyMove(int *solution, int*move);
+public:
+    tabu(int n);
+    tabu(string filename);
+    ~tabu();
+
+    void setTabuList(int tabuListSize);
+
     void printSolution();
 
     void runTabuSearch(int iterations);
+    void show();
 };
 
 

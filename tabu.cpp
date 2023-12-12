@@ -12,45 +12,16 @@ tabu::tabu(int n) {
 
     this->bestSolution = new int [numCities];
 
-    this->distanceMatrix = new int * [numCities];
-    for (int i = 0; i < numCities; ++i) {
-        this->distanceMatrix[i] = new int [numCities];
-    }
 
+    this->graph = new map(numCities);
 
-    for (int i = 0; i < numCities; ++i) {
-        for (int j = 0; j < numCities; ++j) {
-            if (i == j) distanceMatrix[i][j] = 0;
-            else distanceMatrix[i][j] = rand()%1000;
-        }
-    }
 }
 
 tabu::tabu(string filename) {
-    std::string path = "../input_files/"+filename;
+    this->graph = new  map(filename);
+    numCities = graph->get_size();
     bestCost = INF;
-    std::fstream f;
-    f.open(path);
-
-    if (f.is_open()){
-        f >> this->numCities;
-
-        this->bestSolution = new int [numCities];
-
-        this->distanceMatrix = new int * [numCities];
-        for (int i = 0; i < numCities; ++i) {
-            this->distanceMatrix[i] = new int [numCities];
-        }
-
-        for (int i = 0; i < numCities; ++i) {
-            for (int j = 0; j < numCities; ++j) {
-                f >> distanceMatrix[i][j];
-                if (i == j){
-                    distanceMatrix[i][j] = INT_MAX/2;
-                }
-            }
-        }
-    }
+    this->bestSolution = new int [numCities];
 }
 
 void tabu::runTabuSearch(int iterations) {
@@ -110,9 +81,9 @@ void tabu::randomPermutation(int* arr, int size) {
 int tabu::calculateTotalCost(int* solution) {
     int cost = 0;
     for (int i = 0; i < numCities - 1; ++i) {
-        cost += distanceMatrix[solution[i]][solution[i + 1]];
+        cost += graph->get_weight(solution[i],solution[i + 1]);
     }
-    cost += distanceMatrix[solution[numCities - 1]][solution[0]]; // Return to the starting city
+    cost += graph->get_weight(solution[numCities - 1],solution[0]); // Return to the starting city
     return cost;
 }
 
@@ -205,15 +176,16 @@ void tabu::printTabuList() {
 }
 
 tabu::~tabu() {
-    for (int i = 0; i < numCities; ++i) {
-        delete[] distanceMatrix[i];
-    }
-    delete[] distanceMatrix;
+    delete graph;
     for (int i = 0; i < tabuListSize; ++i) {
         delete[] tabuList[i];
     }
     delete[] tabuList;
     delete[] bestSolution;
+}
+
+void tabu::show() {
+    this->graph->show();
 }
 
 
