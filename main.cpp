@@ -6,7 +6,7 @@
 #include <fstream>
 #include "tabu.h"
 
-using namespace std;
+
 
 void temp();
 void testing();
@@ -206,8 +206,8 @@ void tabu_m(){
 }
 void tabu_md(){
     const int number_of_tests = 10;
-    string files[] = {/*"br17.atsp"};*/"ftv33.atsp","ftv44.atsp",  "ftv55.atsp", "ftv64.atsp", "ftv70.atsp"};
-    int solutions [] = {/*39};//*/1286,1613,1608,1839,1950};
+    string files[] = {"ftv33.atsp","ftv44.atsp",  "ftv55.atsp", "ftv64.atsp", "ftv70.atsp"};
+    int solutions [] = {1286,1613,1608,1839,1950};
     int lists[] = {50,100,150,200};
     int iter[] = {500,1000, 2000, 5000, 10000, 20000};
     int tabu_size = 0;

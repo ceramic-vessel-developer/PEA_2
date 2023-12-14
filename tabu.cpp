@@ -4,11 +4,12 @@
 
 #include <fstream>
 #include "tabu.h"
-using namespace std;
+
+
 tabu::tabu(int n) {
     srand(time(nullptr));
     bestCost = INT_MAX/2;
-    n = n;
+    this->n = n;
     this->bestSolution = new int [n];
 
     this->graph = new map(n);
@@ -17,7 +18,7 @@ tabu::tabu(int n) {
 
 tabu::tabu(string filename) {
     this->graph = new  map(filename);
-    n = graph->get_size();
+    this->n = graph->get_size();
     bestCost = INT_MAX/2;
     this->bestSolution = new int [n];
 }
@@ -51,13 +52,13 @@ int tabu::solve(int iterations) {
 }
 
 void tabu::print_solution() {
-    cout << "Best TSP Solution: ";
+    std::cout << "Best TSP Solution: ";
     for (int i = 0; i < n; ++i) {
-        cout << bestSolution[i] << " ";
+        std::cout << bestSolution[i] << " ";
     }
-    cout << bestSolution[0] << " "<< endl;
+    std::cout << bestSolution[0] << " "<< std::endl;
 
-    cout << "Cost of the best solution: " << bestCost << endl;
+    std::cout << "Cost of the best solution: " << bestCost << std::endl;
 }
 
 void tabu::init(int* solution) {
