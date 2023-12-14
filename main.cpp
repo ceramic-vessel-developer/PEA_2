@@ -14,6 +14,7 @@ void tabu_t();
 void research();
 void tabu_m();
 void menu();
+void tabu_md();
 
 int main() {
     menu();
@@ -67,9 +68,9 @@ void temp(){
 
 
         test->setTabuList(50);
-        test->runTabuSearch(10000);
+        test->solve(10000);
 
-        test->printSolution();
+        test->print_solution();
         delete test;
     }
 }
@@ -145,8 +146,8 @@ void tabu_t(){
                 std::cout << "Wprowadz liczbe iteracji" << std::endl;
                 std::cin >> iterations;
                 test->setTabuList(size);
-                test->runTabuSearch(iterations);
-                test->printSolution();
+                test->solve(iterations);
+                test->print_solution();
                 break;
             case 5:
                 delete test;
@@ -161,12 +162,13 @@ void tabu_t(){
 }
 
 void research(){
-    tabu_m();
+    //tabu_m();
+    tabu_md();
 }
 
 void tabu_m(){
     const int number_of_tests = 25;
-    int sizes []= {10,20,30,40,50,60,70,80};
+    int sizes []= {/*10,20,30,40,50,60,70,80, */90, 100};
     int tabu_size = 25;
     int iterations = 1000;
     int size;
@@ -178,7 +180,7 @@ void tabu_m(){
     QueryPerformanceFrequency(&frequency);
     f.open(path,std::ios::out);
     f.close();
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < 2; ++i) {
         size = sizes[i];
         for (int j = 0; j < number_of_tests; ++j) {
             std::cout<< "tabu " << i << ' '<< j << std::endl;
@@ -186,7 +188,7 @@ void tabu_m(){
             tabu* test = new tabu(size);
             test->setTabuList(tabu_size);
             QueryPerformanceCounter(&start_time);
-            test->runTabuSearch(iterations);
+            test->solve(iterations);
             QueryPerformanceCounter(&end_time);
 
             elapsed_time.QuadPart = end_time.QuadPart - start_time.QuadPart;
@@ -200,6 +202,58 @@ void tabu_m(){
         f.open(path,std::ios::app);
         f << size << ' ' << time <<  std::endl;
         f.close();
+    }
+}
+void tabu_md(){
+    const int number_of_tests = 10;
+    string files[] = {/*"br17.atsp"};*/"ftv33.atsp","ftv44.atsp",  "ftv55.atsp", "ftv64.atsp", "ftv70.atsp"};
+    int solutions [] = {/*39};//*/1286,1613,1608,1839,1950};
+    int lists[] = {50,100,150,200};
+    int iter[] = {500,1000, 2000, 5000, 10000, 20000};
+    int tabu_size = 0;
+    int iterations = 0;
+    int size = 0;
+
+    string file;
+    int cost, diff, hit;
+    float hit_percent, diff_percent;
+    std::fstream f;
+    std::string path = "../output_files/tabu_acc.txt";
+
+    f.open(path,std::ios::out);
+    f.close();
+    for (int i = 0; i < 5; ++i) {
+        size = 0;
+        file = files[i];
+        for (int j = 0; j < 4; ++j) {
+            tabu_size = lists[j];
+            for (int k = 0; k < 6; ++k) {
+                iterations = iter[k];
+                hit_percent = 0;
+                diff_percent = 0;
+                hit = 0;
+                for (int l = 0; l < number_of_tests; ++l) {
+                    std::cout << "tabu " << i << ' ' << j << ' ' << k << ' ' << l << std::endl;
+
+                    tabu *test = new tabu(file);
+                    if (size == 0) size = test->get_size();
+                    test->setTabuList(tabu_size);
+                    cost = test->solve(iterations);
+                    diff = cost - solutions[i];
+                    if (diff == 0) hit++;
+                    diff_percent = diff_percent + (((float)diff/(float)solutions[i])*100);
+
+                    delete test;
+
+                }
+                diff_percent = diff_percent/number_of_tests;
+                hit_percent = ((float)hit/(float)number_of_tests)*100;
+                f.open(path,std::ios::app);
+                f << size << ' ' << tabu_size << ' ' << iterations << ' ' << diff_percent<< ' ' << hit_percent<<  std::endl;
+                f.close();
+            }
+        }
+
     }
 }
 

@@ -12,39 +12,33 @@
 using namespace std;
 class tabu {
 private:
-    int INF = INT_MAX/2;
-    int numCities;
-    int tabuListSize;
+    int n;
+    int tabu_len;
     map* graph;
     int* bestSolution;
     int bestCost;
-    int** tabuList;
-    void printTabuList();
+    int** tabuList = nullptr;
 
-    int* findBestMove(int *solution);
-
-    void generateCandidateList(int *solution);
-
-    int calculateTotalCost(int *solution);
-
-    void randomPermutation(int *arr, int size);
-
-    void initializeSolution(int *solution);
-
+    int* find_best_move(int *solution);
+    int calculate_cost(int *solution);
+    void permutation(int *arr, int size);
+    void init(int *solution);
     void copyArray( int *source, int *destination, int size);
-
-    void applyMove(int *solution, int*move);
+    void applyMove(int *solution, int *move);
 public:
     tabu(int n);
     tabu(string filename);
     ~tabu();
 
     void setTabuList(int tabuListSize);
+    void print_solution();
+    int solve(int iterations);
 
-    void printSolution();
 
-    void runTabuSearch(int iterations);
+
+
     void show();
+    int get_size();
 };
 
 
