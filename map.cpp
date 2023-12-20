@@ -17,7 +17,7 @@ map::map(int n) {
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
             if (i == j) matrix[i][j] = INT_MAX/2;
-            else matrix[i][j] = rand()%(INT_MAX/2);
+            else matrix[i][j] = rand()%(INT_MAX/2000);
         }
     }
 }
